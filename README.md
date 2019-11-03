@@ -1,12 +1,38 @@
+## Overview
+
+The easily scaled client library for creating, serializing and sending transactions for [cosmos-sdk](https://github.com/cosmos/cosmos-sdk/) and [tendermint](https://github.com/tendermint/tendermint) based networks. 
+
+The library provides to use build-in methods for executing popular functions in Cosmos based networks or adding custom methods after creating message structure with [js-amino](https://github.com/cybercongress/js-amino).
+
+The objective is providing query constructor to Cosmos community. By this way without additional efforts, it's an opportunity to supplement and customize existing classes of builders and RPC clients for interaction with any Cosmos based network by DRY and KISS principles.
+
+## Features
+
+1. Separation of tx builder and server connection
+2. [Gaia](https://github.com/cosmos/gaia) (Cosmos Hub) and [Cyberd](https://github.com/cybercongress/cyberd) chains implemented
+3. OOP-based expandable architecture for supporting any type of cosmos or tendermint chains
+4. Possibility to redefine any step of transaction creation for custom networks like Cyberd
+5. Sending any default or custom transaction by one line by passing address, privateKey and transaction params
+6. Serialization using [js-amino](https://github.com/cybercongress/js-amino/)
+
+## TODO:
+
+1. Implement Tendermint builder and RPC for generate and send transactions for general purposes that will be valid for any cosmos network without using cosmos-sdk (aka LCD, Gaia-Lite)
+2. Implement builders and RPC for popular cosmos networks
+3. Emulate RPC server in tests and test requests sending for RPC classes
+4. Improve tests coverage
+5. Ledger support
+6. Add more Gaia(Cosmos hub) methods
+
 ## Install
 ```
-npm install git://github.com/cybercongress/cosmos-js.git#cosmos-builder --save
+npm install git://github.com/galtproject/cosmos-js.git --save
 ```
 
 # RPC server calling
 
 ## Usage example for Cosmos-sdk RPC
-```$js
+```js
 import CosmosSdkRpc from 'cosmos-js/dist/rpc/cosmosSdkRpc';
 const constants = require('cosmos-js/dist/constants/cosmos');
 
@@ -34,9 +60,9 @@ cosmosRpc
 
 ```
 
-## Usage example for CyberD RPC
+## Usage example for Cyberd RPC
 
-```$js
+```js
 
 import CyberDRpc from 'cosmos-js/dist/rpc/cyberdRpc';
 
@@ -65,7 +91,7 @@ cyberdRpc
   });
 ```
 
-# Custom builder definition
+## Custom builder definition
 
 You might need use cosmos-sdk builder but with some custom RPC methods or with changes 
 in transaction structure.
@@ -75,7 +101,7 @@ like CosmosSdkBuilder.
 
 For creating custom request - need to define js-amino type first of your custom message:
 
-```$js
+```js
 const { TypeFactory, Types } = require('js-amino');
 
 const CustomMessage = TypeFactory.create('CustomMessage', [
@@ -92,7 +118,7 @@ const CustomMessage = TypeFactory.create('CustomMessage', [
 
 Then - you can use this CustomMessage for build custom request.
 
-```$js
+```js
 import CosmosSdkBuilder from 'cosmos-js/dist/builders/cosmosSdkBuilder';
 import CosmosCodec from 'cosmos-js/dist/codec';
 
@@ -112,7 +138,7 @@ class MyCustomChainBuilder extends CosmosSdkBuilder {
 ```
 
 Then - you can build your request manually:
-```$js
+```js
 const requestData = {
   account: {
     address: keyPair.address,
@@ -150,11 +176,11 @@ defined in these methods.
 
 You can see the example in [cyberDBuilder.js](./src/builders/cyberDBuilder.js).
 
-# Custom RPC definition
+## Custom RPC definition
 
 For definition method for sending your custom transaction to rpc server - you can
 create custom rpc class:
-```$js
+```js
 import CosmosSdkRpc from 'cosmos-js/dist/rpc/cosmosSdkRpc';
 
 class MyCustomChainRpc extends CosmosSdkRpc {
@@ -187,7 +213,7 @@ class MyCustomChainRpc extends CosmosSdkRpc {
 }
 ```
 Then use `MyCustomChainRpc` like this:
-```$js
+```js
 const myCustomChainRpc = new MyCustomChainRpc('http://rpc.server', new NetConfig('customprefix', 'custompubprefix'));
 
 myCustomChainRpc.executeCustomRequest(
